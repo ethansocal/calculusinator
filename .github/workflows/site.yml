@@ -35,7 +35,8 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-          run: bun install --frozen-lockfile
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
