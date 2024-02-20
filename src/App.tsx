@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import "./globals.css";
 import { MathJaxContext } from "better-react-mathjax";
 import { Answer, generateQuestions, Question } from "@/lib/question";
@@ -12,6 +12,19 @@ function App() {
     );
     const [showingAnswers, setShowingAnswers] = useState(false);
 
+    useEffect(() => {
+        setQuestions((current) => {
+            if (current.length < numOfQuestions) {
+                return current.concat(
+                    generateQuestions(numOfQuestions - current.length),
+                );
+            } else if (current.length > numOfQuestions) {
+                console.log(`slicing ${current.length - numOfQuestions}`);
+                return current.slice(0, numOfQuestions);
+            }
+            return current;
+        });
+    }, [numOfQuestions]);
     return (
         <MathJaxContext>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -23,8 +36,10 @@ function App() {
                     numOfQuestions={numOfQuestions}
                 />
                 <div
-                    className={"grid p-6 font-XITS gap-y-4"}
-                    style={{ gridTemplateColumns: "min-content 1fr 1fr" }}
+                    className={"grid p-6 font-XITS gap-y-4 overflow-clip"}
+                    style={{
+                        gridTemplateColumns: `min-content 1fr ${showingAnswers ? "1fr" : 0}`,
+                    }}
                 >
                     {questions.map((question, index) => (
                         <Fragment
@@ -42,12 +57,10 @@ function App() {
                                 />
                             </div>
                             <div className={"text-primary"}>
-                                {showingAnswers && (
-                                    <Answer
-                                        type={question.type}
-                                        data={question.data}
-                                    />
-                                )}
+                                <Answer
+                                    type={question.type}
+                                    data={question.data}
+                                />
                             </div>
                         </Fragment>
                     ))}

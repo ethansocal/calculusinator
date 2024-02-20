@@ -46,7 +46,7 @@ export function Header({
                     New Questions
                 </Button>
                 <Popover>
-                    <PopoverTrigger>
+                    <PopoverTrigger asChild>
                         <Button size={"icon"} variant={"outline"}>
                             <Settings size={20} />
                         </Button>
@@ -59,25 +59,10 @@ export function Header({
                                 value={numOfQuestions}
                                 onChange={(e) => {
                                     const value = parseInt(e.target.value);
-                                    if (!isNaN(value)) {
-                                        setQuestions((current) => {
-                                            if (current.length < value) {
-                                                console.log(
-                                                    `generating ${current.length - value}`,
-                                                );
-                                                return current.concat(
-                                                    generateQuestions(
-                                                        value - current.length,
-                                                    ),
-                                                );
-                                            } else if (current.length > value) {
-                                                console.log(
-                                                    `slicing ${current.length - value}`,
-                                                );
-                                                return current.slice(0, value);
-                                            }
-                                            return current;
-                                        });
+                                    if (!isNaN(value) && value > 0) {
+                                        setNumOfQuestions(value);
+                                    } else {
+                                        setNumOfQuestions(1);
                                     }
                                 }}
                             />

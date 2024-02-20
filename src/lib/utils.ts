@@ -14,11 +14,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export class WeightedRandomizer<T> {
-    constructor(private options: { weight: number; value: T }[]) {}
+    constructor(private options: [number, T][]) {}
     random() {
-        let total = this.options.reduce((acc, { weight }) => acc + weight, 0);
+        let total = this.options.reduce((acc, [weight]) => acc + weight, 0);
         let random = Math.random() * total;
-        for (let { weight, value } of this.options) {
+        for (let [weight, value] of this.options) {
             if (random < weight) {
                 return value;
             }
