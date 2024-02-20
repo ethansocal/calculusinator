@@ -36,9 +36,11 @@ function App() {
                     numOfQuestions={numOfQuestions}
                 />
                 <div
-                    className={"grid p-6 font-XITS gap-y-4 overflow-clip"}
+                    className={
+                        "grid p-6 font-XITS gap-y-4 overflow-clip gap-x-4"
+                    }
                     style={{
-                        gridTemplateColumns: `min-content 1fr ${showingAnswers ? "1fr" : 0}`,
+                        gridTemplateColumns: `min-content ${showingAnswers ? "max-content" : "1fr"} ${showingAnswers ? "1fr" : 0}`,
                     }}
                 >
                     {questions.map((question, index) => (
@@ -49,18 +51,20 @@ function App() {
                                 index
                             }
                         >
-                            <p>{index + 1}.</p>
+                            <p className={"justify-self-end"}>{index + 1}.</p>
                             <div>
                                 <Question
                                     type={question.type}
                                     data={question.data}
                                 />
                             </div>
-                            <div className={"text-primary"}>
-                                <Answer
-                                    type={question.type}
-                                    data={question.data}
-                                />
+                            <div className={"self-end text-primary"}>
+                                {showingAnswers && (
+                                    <Answer
+                                        type={question.type}
+                                        data={question.data}
+                                    />
+                                )}
                             </div>
                         </Fragment>
                     ))}

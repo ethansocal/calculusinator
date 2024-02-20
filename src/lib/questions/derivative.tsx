@@ -70,7 +70,7 @@ const possibilities = new WeightedRandomizer<() => [string, string]>([
     [1, () => ["arcsec(x)", "divide(1, abs(x)*sqrt(x^2 - 1))"]],
     [1, () => ["arccot(x)", "divide(-1, 1 + x^2)"]],
     [
-        10,
+        15,
         () => {
             const coefficients = generateCoefficients();
             const polynomial = coefficients
