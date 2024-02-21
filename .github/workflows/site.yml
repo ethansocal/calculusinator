@@ -38,7 +38,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v4
         with:
-          path: node-modules
+          path: node_modules
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
       - name: Install Dependencies
         run: bun install --frozen-lockfile
