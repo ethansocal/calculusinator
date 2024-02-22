@@ -38,6 +38,7 @@
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@react-buddy/ide-toolbox": "^2.4.0",
+    "@sentry/react": "^7.102.1",
     "algebrite": "^1.4.0",
     "better-react-mathjax": "^2.0.3",
     "class-variance-authority": "^0.7.0",
