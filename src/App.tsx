@@ -59,12 +59,12 @@ function App() {
                                 />
                             </div>
                             <div className={"self-end text-primary"}>
-                                {showingAnswers && (
+                                <div className={showingAnswers ? "" : "hidden"}>
                                     <Answer
                                         type={question.type}
                                         data={question.data}
                                     />
-                                )}
+                                </div>
                             </div>
                         </Fragment>
                     ))}

@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 
 const questions: Record<string, QuestionFile<unknown>> = import.meta.glob(
-    "./questions/*.tsx",
+    "./questions/**/*.tsx",
     {
         eager: true,
     },
@@ -21,7 +21,9 @@ export interface QuestionFile<T> {
 }
 
 function randomQuestion() {
-    let keys = Object.keys(questions);
+    let keys = Object.keys(questions).filter(
+        (key) => !/\.\/questions\S+\/_\w+\.tsx/.test(key),
+    );
     return keys[(keys.length * Math.random()) << 0];
 }
 
@@ -30,6 +32,15 @@ export function generateQuestions(num: number) {
         .fill(0)
         .map((_) => {
             const question = randomQuestion();
-            return { type: question, data: questions[question]!.createData() };
+            while (true) {
+                try {
+                    return {
+                        type: question,
+                        data: questions[question]!.createData(),
+                    };
+                } catch (e) {
+                    console.error(e);
+                }
+            }
         });
 }

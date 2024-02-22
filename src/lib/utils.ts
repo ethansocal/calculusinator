@@ -8,6 +8,8 @@ import {
     simplifyConstant,
     simplifyCore,
 } from "mathjs";
+import { Expression } from "nerdamer";
+import { nerdamer } from "@/lib/nerdamer";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -28,8 +30,17 @@ export class WeightedRandomizer<T> {
     }
 }
 
+export function simplifyAndExpand(input: Expression): Expression {
+    // @ts-ignore
+    return nerdamer.expand(nerdamer.simplify(nerdamer(input)));
+}
+
+export function pickRandom<T>(arr: T[]) {
+    return arr[(arr.length * Math.random()) << 0];
+}
+
 export function randomCoefficient() {
-    if (Math.random() < 0.33) {
+    if (Math.random() < 0.67) {
         return 1;
     }
     let chosenNumber = Math.floor(Math.random() * 20) - 10;
@@ -37,6 +48,10 @@ export function randomCoefficient() {
         return 1;
     }
     return chosenNumber;
+}
+
+export function derivative(input: string | Expression) {
+    return nerdamer(`diff(${input.toString()})`);
 }
 
 function isOperator(node: MathNode | OperatorNode): node is OperatorNode {

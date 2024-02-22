@@ -59,8 +59,14 @@ export function Header({
                                 value={numOfQuestions}
                                 onChange={(e) => {
                                     const value = parseInt(e.target.value);
-                                    if (!isNaN(value) && value > 0) {
-                                        setNumOfQuestions(value);
+                                    if (!isNaN(value)) {
+                                        if (value < 1) {
+                                            setNumOfQuestions(1);
+                                        } else if (value > 200) {
+                                            setNumOfQuestions(200);
+                                        } else {
+                                            setNumOfQuestions(value);
+                                        }
                                     } else {
                                         setNumOfQuestions(1);
                                     }
