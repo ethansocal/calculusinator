@@ -28,13 +28,14 @@ function randomFraction() {
 export function randomPolynomial(degree: number = randomInt(1, 4)) {
     const parts = [];
     for (let i = degree; i > 0; i--) {
+        let coef = randomPolynomialCoefficient();
+        if (i === degree && coef === "0") {
+            coef = "1";
+        }
         parts.push(`${randomPolynomialCoefficient()}x^${i}`);
     }
     if (Math.random() < 0.5) {
         parts.push(`${randomPolynomialCoefficient()}x^(${randomFraction()})`);
-    }
-    if (parts.every((i) => i.startsWith("0"))) {
-        return randomPolynomial();
     }
     return parts.join(" + ");
 }
