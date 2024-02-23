@@ -11,9 +11,9 @@ import { derivative, simplifyAndExpand } from "@/lib/utils";
 
 function randomPolynomialCoefficient() {
     if (Math.random() < 0.33) {
-        return "";
+        return 1;
     } else if (Math.random() < 0.25) {
-        return "0";
+        return 0;
     }
     return randomInt(-9, 9);
 }
@@ -27,10 +27,10 @@ function randomFraction() {
 
 export function randomPolynomial(degree: number = randomInt(1, 4)) {
     const parts = [];
-    for (let i = degree; i > 0; i--) {
+    for (let i = degree; i >= 0; i--) {
         let coef = randomPolynomialCoefficient();
-        if (i === degree && coef === "0") {
-            coef = "1";
+        if (i === degree && coef === 0) {
+            coef = 1;
         }
         parts.push(`${randomPolynomialCoefficient()}x^${i}`);
     }
