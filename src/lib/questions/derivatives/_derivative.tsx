@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import MathRender from "@/lib/MathRender";
-import type { Expression } from "nerdamer";
+import nerdamer, { Expression } from "nerdamer";
 
 export type DerivativeProps = {
     question: Expression;

@@ -62,8 +62,8 @@ export function Header({
                                     if (!isNaN(value)) {
                                         if (value < 1) {
                                             setNumOfQuestions(1);
-                                        } else if (value > 200) {
-                                            setNumOfQuestions(200);
+                                        } else if (value > 50) {
+                                            setNumOfQuestions(50);
                                         } else {
                                             setNumOfQuestions(value);
                                         }

@@ -37,7 +37,9 @@ function randomSubstitution() {
     if (Math.random() < 0.2) {
         return "e^x";
     }
-    return randomPolynomial(randomInt(1, 2));
+    const poly = randomPolynomial(randomInt(1, 2));
+    console.log(poly);
+    return poly;
 }
 
 export function createData(): DerivativeProps {

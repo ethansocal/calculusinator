@@ -18,7 +18,9 @@ function randomSubstitution() {
         return "x";
     }
     if (Math.random() < 0.5) {
-        return randomPolynomial(randomInt(1, 2));
+        const poly = randomPolynomial(randomInt(1, 2));
+        console.log(poly);
+        return poly;
     }
     return pickRandom(trigonometricFunctions);
 }

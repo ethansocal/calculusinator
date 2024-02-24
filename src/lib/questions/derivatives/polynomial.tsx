@@ -32,7 +32,7 @@ export function randomPolynomial(degree: number = randomInt(1, 4)) {
         if (i === degree && coef === 0) {
             coef = 1;
         }
-        parts.push(`${randomPolynomialCoefficient()}x^${i}`);
+        parts.push(`${coef}x^${i}`);
     }
     if (Math.random() < 0.5) {
         parts.push(`${randomPolynomialCoefficient()}x^(${randomFraction()})`);

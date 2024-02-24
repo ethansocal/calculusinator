@@ -1,7 +1,6 @@
-import { MathJax } from "better-react-mathjax";
-import { ReactElement, ReactNode } from "react";
 import { type Expression } from "nerdamer";
-import { nerdamer } from "@/lib/nerdamer";
+import "katex/dist/katex.min.css";
+import { InlineMath, BlockMath } from "react-katex";
 
 function changeInverseTrigFunctions(input: string) {
     return input
@@ -25,8 +24,8 @@ export default function MathRender({ math }: { math: string | Expression }) {
         math = math.toTeX();
     }
     return (
-        <MathJax>
-            \({removeCDot(changeLog(changeInverseTrigFunctions(math)))}\)
-        </MathJax>
+        <InlineMath>
+            {removeCDot(changeLog(changeInverseTrigFunctions(math)))}
+        </InlineMath>
     );
 }

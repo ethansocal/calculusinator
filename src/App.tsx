@@ -26,51 +26,47 @@ function App() {
         });
     }, [numOfQuestions]);
     return (
-        <MathJaxContext>
-            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                <Header
-                    setQuestions={setQuestions}
-                    showingAnswers={showingAnswers}
-                    setShowingAnswers={setShowingAnswers}
-                    setNumOfQuestions={setNumOfQuestions}
-                    numOfQuestions={numOfQuestions}
-                />
-                <div
-                    className={
-                        "grid p-6 font-XITS gap-y-4 overflow-clip gap-x-4"
-                    }
-                    style={{
-                        gridTemplateColumns: `min-content ${showingAnswers ? "max-content" : "1fr"} ${showingAnswers ? "1fr" : 0}`,
-                    }}
-                >
-                    {questions.map((question, index) => (
-                        <Fragment
-                            key={
-                                question.type +
-                                JSON.stringify(question.data) +
-                                index
-                            }
-                        >
-                            <p className={"justify-self-end"}>{index + 1}.</p>
-                            <div>
-                                <Question
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <Header
+                setQuestions={setQuestions}
+                showingAnswers={showingAnswers}
+                setShowingAnswers={setShowingAnswers}
+                setNumOfQuestions={setNumOfQuestions}
+                numOfQuestions={numOfQuestions}
+            />
+            <div
+                className={"grid p-6 font-XITS gap-y-4 overflow-clip gap-x-4"}
+                style={{
+                    gridTemplateColumns: `min-content ${showingAnswers ? "max-content" : "1fr"} ${showingAnswers ? "1fr" : 0}`,
+                }}
+            >
+                {questions.map((question, index) => (
+                    <Fragment
+                        key={
+                            question.type +
+                            JSON.stringify(question.data) +
+                            index
+                        }
+                    >
+                        <p className={"justify-self-end"}>{index + 1}.</p>
+                        <div>
+                            <Question
+                                type={question.type}
+                                data={question.data}
+                            />
+                        </div>
+                        <div className={"self-end text-primary"}>
+                            <div className={showingAnswers ? "" : "hidden"}>
+                                <Answer
                                     type={question.type}
                                     data={question.data}
                                 />
                             </div>
-                            <div className={"self-end text-primary"}>
-                                <div className={showingAnswers ? "" : "hidden"}>
-                                    <Answer
-                                        type={question.type}
-                                        data={question.data}
-                                    />
-                                </div>
-                            </div>
-                        </Fragment>
-                    ))}
-                </div>
-            </ThemeProvider>
-        </MathJaxContext>
+                        </div>
+                    </Fragment>
+                ))}
+            </div>
+        </ThemeProvider>
     );
 }
 

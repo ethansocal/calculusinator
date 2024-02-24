@@ -16,7 +16,8 @@ Sentry.init({
         }),
         Sentry.feedbackIntegration({
             // Additional SDK configuration goes in here, for example:
-            colorScheme: "light",
+            colorScheme: "system",
+            showBranding: false,
         }),
     ],
     beforeSend(event, hint) {
