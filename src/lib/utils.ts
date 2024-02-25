@@ -1,13 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import {
-    MathNode,
-    OperatorNode,
-    rationalize,
-    simplify,
-    simplifyConstant,
-    simplifyCore,
-} from "mathjs";
+import { MathNode, OperatorNode, rationalize, simplifyCore } from "mathjs";
 import { Expression } from "nerdamer";
 import { nerdamer } from "@/lib/nerdamer";
 

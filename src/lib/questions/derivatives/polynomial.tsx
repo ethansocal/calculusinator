@@ -1,4 +1,4 @@
-import { pickRandom, randomInt } from "mathjs";
+import { randomInt } from "mathjs";
 import { nerdamer } from "@/lib/nerdamer";
 import {
     DerivativeAnswer,
@@ -6,7 +6,6 @@ import {
     DerivativeQuestion,
 } from "@/lib/questions/derivatives/_derivative";
 import React from "react";
-import { Expression } from "nerdamer";
 import { derivative, simplifyAndExpand } from "@/lib/utils";
 
 function randomPolynomialCoefficient() {

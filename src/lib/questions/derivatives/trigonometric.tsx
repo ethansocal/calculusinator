@@ -1,9 +1,4 @@
-import {
-    derivative,
-    pickRandom,
-    randomCoefficient,
-    simplifyAndExpand,
-} from "@/lib/utils";
+import { derivative, pickRandom } from "@/lib/utils";
 import { nerdamer } from "@/lib/nerdamer";
 
 import {

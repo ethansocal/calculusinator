@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
 import "./globals.css";
-import { MathJaxContext } from "better-react-mathjax";
 import { Answer, generateQuestions, Question } from "@/lib/question";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/Header";
@@ -26,9 +25,11 @@ function App() {
         });
     }, [numOfQuestions]);
     return (
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
             <Header
-                setQuestions={setQuestions}
+                newQuestions={() =>
+                    setQuestions(generateQuestions(numOfQuestions))
+                }
                 showingAnswers={showingAnswers}
                 setShowingAnswers={setShowingAnswers}
                 setNumOfQuestions={setNumOfQuestions}

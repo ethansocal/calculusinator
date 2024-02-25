@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { generateQuestions } from "@/lib/question";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -12,19 +11,19 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 
+const MAX_QUESTIONS = 100;
+
 export function Header({
-    setQuestions,
+    newQuestions,
     showingAnswers,
     setShowingAnswers,
     setNumOfQuestions,
     numOfQuestions,
 }: {
-    setQuestions: React.Dispatch<
-        React.SetStateAction<{ type: string; data: unknown }[]>
-    >;
+    newQuestions: () => void;
     showingAnswers: boolean;
     setShowingAnswers: (showingAnswers: boolean) => void;
-    setNumOfQuestions: React.Dispatch<React.SetStateAction<number>>;
+    setNumOfQuestions: (amount: number) => void;
     numOfQuestions: number;
 }) {
     return (
@@ -34,15 +33,7 @@ export function Header({
             }
         >
             <div className={"flex flex-row items-center gap-1"}>
-                <Button
-                    variant={"outline"}
-                    onClick={() =>
-                        setQuestions((current) =>
-                            generateQuestions(current.length),
-                        )
-                    }
-                    size={"sm"}
-                >
+                <Button variant={"outline"} onClick={newQuestions} size={"sm"}>
                     New Questions
                 </Button>
                 <Popover>
@@ -62,8 +53,8 @@ export function Header({
                                     if (!isNaN(value)) {
                                         if (value < 1) {
                                             setNumOfQuestions(1);
-                                        } else if (value > 50) {
-                                            setNumOfQuestions(50);
+                                        } else if (value > MAX_QUESTIONS) {
+                                            setNumOfQuestions(MAX_QUESTIONS);
                                         } else {
                                             setNumOfQuestions(value);
                                         }

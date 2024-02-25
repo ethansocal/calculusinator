@@ -1,6 +1,6 @@
 import { type Expression } from "nerdamer";
 import "katex/dist/katex.min.css";
-import { InlineMath, BlockMath } from "react-katex";
+import { InlineMath } from "react-katex";
 
 function changeInverseTrigFunctions(input: string) {
     return input

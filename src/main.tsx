@@ -1,8 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { DevSupport } from "@react-buddy/ide-toolbox";
-import { ComponentPreviews, useInitial } from "./dev";
 
 import * as Sentry from "@sentry/react";
 
@@ -42,11 +40,6 @@ Sentry.init({
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-        <DevSupport
-            ComponentPreviews={ComponentPreviews}
-            useInitialHook={useInitial}
-        >
-            <App />
-        </DevSupport>
+        <App />
     </React.StrictMode>,
 );
