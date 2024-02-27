@@ -46,7 +46,10 @@ jobs:
         id: pages
         uses: actions/configure-pages@v4
       - name: Build with Vite
-        run: ASSET_URL=${{ steps.pages.outputs.base_path }} bun run build
+        run: bun run build
+        env: # Or as an environment variable
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          ASSET_URL: ${{ steps.pages.outputs.base_path }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
