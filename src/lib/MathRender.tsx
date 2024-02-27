@@ -1,6 +1,6 @@
 import { type Expression } from "nerdamer";
 import "katex/dist/katex.min.css";
-import { InlineMath } from "react-katex";
+import { InlineMath, BlockMath } from "react-katex";
 
 function changeInverseTrigFunctions(input: string) {
     return input
@@ -20,12 +20,20 @@ function removeCDot(input: string) {
 }
 
 export default function MathRender({ math }: { math: string | Expression }) {
-    if (typeof math !== "string") {
-        math = math.toTeX();
+    try {
+        if (typeof math !== "string") {
+            math = math.toTeX();
+            console.log(math);
+        }
+        return (
+            <InlineMath>
+                {removeCDot(changeLog(changeInverseTrigFunctions(math)))}
+            </InlineMath>
+        );
+    } catch (e) {
+        console.error(e);
+        return (
+            <div>Sorry, there was an error rendering this math expression!</div>
+        );
     }
-    return (
-        <InlineMath>
-            {removeCDot(changeLog(changeInverseTrigFunctions(math)))}
-        </InlineMath>
-    );
 }

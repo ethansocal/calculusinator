@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { MathNode, OperatorNode, rationalize, simplifyCore } from "mathjs";
 import { Expression } from "nerdamer";
 import { nerdamer } from "@/lib/nerdamer";
 
@@ -21,6 +20,10 @@ export class WeightedRandomizer<T> {
         }
         throw new Error("Weighted randomizer encountered impossible state.");
     }
+}
+
+export function randomInt(a: number, b: number) {
+    return a + Math.floor(Math.random() * (b - a));
 }
 
 export function simplifyAndExpand(input: Expression): Expression {
@@ -47,28 +50,54 @@ export function derivative(input: string | Expression) {
     return nerdamer(`diff(${input.toString()})`);
 }
 
-function isOperator(node: MathNode | OperatorNode): node is OperatorNode {
-    return node.type === "OperatorNode";
+export function integral(input: string | Expression) {
+    return nerdamer(`integrate(${input.toString()})`);
 }
 
-function customLaTeX(node: MathNode, options: object) {
-    if (isOperator(node) && node.fn === "multiply") {
-        return node.args[0].toTex(options) + node.args[1].toTex(options);
+export const trigonometricFunctions = [
+    "sin(x)",
+    "cos(x)",
+    "tan(x)",
+    "csc(x)",
+    "sec(x)",
+    "cot(x)",
+    "asin(x)",
+    "acos(x)",
+    "atan(x)",
+    "acsc(x)",
+    "asec(x)",
+    "acot(x)",
+];
+
+export const commonFunctions = ["log(x)", "e^x"];
+
+export function randomPolynomialCoefficient() {
+    if (Math.random() < 0.33) {
+        return 1;
+    } else if (Math.random() < 0.25) {
+        return 0;
     }
+    return randomInt(-9, 9);
 }
 
-export function toTex(mathNode: MathNode) {
-    return simplifyCore(mathNode).toTex({
-        parenthesis: "hide",
-        implicit: "hide",
-        handler: customLaTeX,
-    });
+export function randomFraction() {
+    if (Math.random() < 0.5) {
+        return "1/2";
+    }
+    return `${randomInt(1, 5)}/${randomInt(1, 5)}`;
 }
 
-export function toTexRationalized(mathNode: MathNode) {
-    return rationalize(mathNode).toTex({
-        parenthesis: "auto",
-        implicit: "hide",
-        handler: customLaTeX,
-    });
+export function randomPolynomial(degree: number = randomInt(1, 4)) {
+    const parts = [];
+    for (let i = degree; i >= 0; i--) {
+        let coef = randomPolynomialCoefficient();
+        if (i === degree && coef === 0) {
+            coef = 1;
+        }
+        parts.push(`${coef}x^${i}`);
+    }
+    if (Math.random() < 0.5) {
+        parts.push(`${randomPolynomialCoefficient()}x^(${randomFraction()})`);
+    }
+    return parts.join(" + ");
 }

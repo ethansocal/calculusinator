@@ -46,7 +46,8 @@ export function generateQuestions(num: number) {
             }
             console.error("Error generating question");
             return {
-                question: "./questions/_error.tsx",
+                type: "./questions/_error.tsx",
+                data: {},
             };
         });
 }
