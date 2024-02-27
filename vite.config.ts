@@ -6,10 +6,13 @@ import path from "path";
 const ASSET_URL = process.env.ASSET_URL || "";
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react(), sentryVitePlugin({
-        org: "ethanhenry",
-        project: "calculusinator"
-    })],
+    plugins: [
+        react(),
+        sentryVitePlugin({
+            org: "ethanhenry",
+            project: "calculusinator",
+        }),
+    ],
 
     resolve: {
         alias: {
@@ -20,6 +23,6 @@ export default defineConfig({
     base: `${ASSET_URL}/`,
 
     build: {
-        sourcemap: true
-    }
+        sourcemap: true,
+    },
 });
