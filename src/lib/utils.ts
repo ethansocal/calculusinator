@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Expression } from "nerdamer";
+import { Expression } from "nerdamer-prime";
 import { nerdamer } from "@/lib/nerdamer";
 
 export function cn(...inputs: ClassValue[]) {

@@ -1,53 +1,35 @@
-import { ReactElement } from "react";
+import { Derivative } from "./problems/derivative";
+import { Integral } from "./problems/integral";
 
-const questions: Record<string, QuestionFile<unknown>> = import.meta.glob(
-    "./questions/**/*.tsx",
-    {
-        eager: true,
+export interface Problem {
+    question: string;
+    answer: string;
+}
+
+export interface ProblemGenerator {
+    generate(enabledProblems: EnabledProblems): Problem;
+    options?: (string | ProblemGenerator)[];
+    name: string;
+}
+
+const problems = [Derivative, Integral];
+
+export const TopLevelProblemGenerator: ProblemGenerator = {
+    generate(enabledProblems: EnabledProblems): Problem {
+        const generator = problems[Math.floor(Math.random() * problems.length)];
+        return generator.generate(enabledProblems);
     },
-);
+    options: [Derivative, Integral],
+    name: "Top Level",
+};
 
-export function Question({ type, data }: { type: string; data: any }) {
-    return questions[type]!.question(data);
-}
+export type EnabledProblems = any;
 
-export function Answer({ type, data }: { type: string; data: any }) {
-    return questions[type]!.answer(data);
-}
-export interface QuestionFile<T> {
-    createData: () => T;
-    question: (data: T) => ReactElement;
-    answer: (data: T) => ReactElement;
-}
-
-function randomQuestion() {
-    let keys = Object.keys(questions).filter((key) =>
-        /\.\/questions\/[^_]+.tsx/.test(key),
+export function generateProblems(
+    amount: number,
+    enabledProblems: EnabledProblems,
+): Problem[] {
+    return Array.from({ length: amount }, () =>
+        TopLevelProblemGenerator.generate(enabledProblems),
     );
-    return keys[(keys.length * Math.random()) << 0];
-}
-
-export function generateQuestions(num: number) {
-    return Array(num)
-        .fill(0)
-        .map((_) => {
-            let attempts = 0;
-            while (attempts < 10) {
-                try {
-                    const question = randomQuestion();
-                    return {
-                        type: question,
-                        data: questions[question]!.createData(),
-                    };
-                } catch (e) {
-                    console.error(e);
-                    attempts += 1;
-                }
-            }
-            console.error("Error generating question");
-            return {
-                type: "./questions/_error.tsx",
-                data: {},
-            };
-        });
 }
