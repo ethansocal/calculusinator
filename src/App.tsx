@@ -25,7 +25,7 @@ function App() {
         });
     }, [numOfQuestions]);
     return (
-        <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
+        <>
             <Header
                 newQuestions={() =>
                     setQuestions(generateQuestions(numOfQuestions))
@@ -67,7 +67,7 @@ function App() {
                     </Fragment>
                 ))}
             </div>
-        </ThemeProvider>
+        </>
     );
 }
 

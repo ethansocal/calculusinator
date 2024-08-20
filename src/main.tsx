@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 
 import * as Sentry from "@sentry/react";
+import { ThemeProvider } from "./components/theme-provider";
 
 Sentry.init({
     dsn: "https://4a0c291edbfc6e9a6d264098c565cf45@o1112946.ingest.sentry.io/4506792449409024",
@@ -40,6 +41,8 @@ Sentry.init({
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-        <App />
+        <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
+            <App />
+        </ThemeProvider>
     </React.StrictMode>,
 );
