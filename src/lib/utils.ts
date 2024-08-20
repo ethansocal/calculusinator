@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Expression } from "nerdamer-prime";
 import { nerdamer } from "@/lib/nerdamer";
+import { EnabledProblems, ProblemGenerator } from "./question";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -20,6 +21,23 @@ export class WeightedRandomizer<T> {
         }
         throw new Error("Weighted randomizer encountered impossible state.");
     }
+}
+
+export function createOptionsTree(
+    options: (string | ProblemGenerator)[],
+): EnabledProblems {
+    let result: EnabledProblems = {};
+    for (const i of options) {
+        if (typeof i === "string") {
+            result[i] = true;
+        } else {
+            result[i.name] = {
+                all: true,
+                ...createOptionsTree(i.options ?? []),
+            };
+        }
+    }
+    return result;
 }
 
 export function randomInt(a: number, b: number) {

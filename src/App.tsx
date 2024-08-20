@@ -1,12 +1,17 @@
 import React, { Fragment, useEffect, useState } from "react";
 import "./globals.css";
-import { generateProblems } from "@/lib/question";
+import { generateProblems, TopLevelProblemGenerator } from "@/lib/question";
 import { Header } from "@/Header";
 import MathRender from "./lib/MathRender";
+import { createOptionsTree } from "./lib/utils";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 function App() {
     const [numOfProblems, setNumOfProblems] = useState(10);
-    const [enabledProblems, setEnabledProblems] = useState({});
+    const [enabledProblems, setEnabledProblems] = useLocalStorage(
+        "enabledProblems",
+        createOptionsTree(TopLevelProblemGenerator.options),
+    );
     const [questions, setQuestions] = useState(
         generateProblems(numOfProblems, enabledProblems),
     );
@@ -22,7 +27,6 @@ function App() {
                     ),
                 );
             } else if (current.length > numOfProblems) {
-                console.log(`slicing ${current.length - numOfProblems}`);
                 return current.slice(0, numOfProblems);
             }
             return current;

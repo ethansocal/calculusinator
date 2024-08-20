@@ -81,7 +81,3 @@
     src: url("fonts/xits/XITS-Italic.woff") format("woff");
     font-style: italic;
 }
-
-ul {
-    @apply pl-4 list-disc;
-}

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ModeToggle } from "@/components/mode-toggle";
-import React from "react";
+import React, { useEffect, useId } from "react";
 import { Settings } from "lucide-react";
 import {
     Popover,
@@ -15,6 +15,29 @@ import { produce } from "immer";
 
 const MAX_QUESTIONS = 100;
 
+function CheckboxLabel({
+    checked,
+    onCheckedChange,
+    name,
+}: {
+    checked: boolean;
+    onCheckedChange: (e: boolean) => void;
+    name: string;
+}) {
+    const id = useId();
+
+    return (
+        <div className={"flex flex-row gap-1 items-center"}>
+            <Checkbox
+                id={id}
+                checked={checked}
+                onCheckedChange={(e) => onCheckedChange(e.valueOf() as boolean)}
+            />
+            <Label htmlFor={id}>{name}</Label>
+        </div>
+    );
+}
+
 export function ProblemOptions({
     problemGenerator,
     enabledOptions,
@@ -25,55 +48,60 @@ export function ProblemOptions({
     setEnabledOptions: (options: any) => void;
 }) {
     return (
-        <ul className="list-disc [&_ul]:list-[revert]">
+        <ul>
             {problemGenerator.options?.map((i) => {
                 if (typeof i === "string") {
                     return (
-                        <li key={i}>
-                            <Label htmlFor={i}>{i}</Label>
-                            <Checkbox
-                                id={i}
+                        <li key={i} className="mt-2">
+                            <CheckboxLabel
+                                name={i}
                                 checked={enabledOptions[i] ?? true}
                                 onCheckedChange={(e) => {
-                                    setEnabledOptions((prev: any) => {
-                                        return produce(prev, (draft: any) => {
-                                            draft[i] = e.valueOf() as boolean;
-                                        });
-                                    });
+                                    setEnabledOptions(
+                                        produce(
+                                            enabledOptions,
+                                            (draft: any) => {
+                                                draft[i] = e;
+                                            },
+                                        ),
+                                    );
                                 }}
                             />
                         </li>
                     );
                 }
                 return (
-                    <li key={i.name}>
-                        <Label>{i.name}</Label>
-                        <Checkbox
-                            id={i.name}
-                            checked={enabledOptions?.[i.name]?.["all"] ?? true}
+                    <li key={i.name} className="mt-4">
+                        <CheckboxLabel
+                            name={i.name}
+                            checked={enabledOptions[i.name]?.["all"] ?? true}
                             onCheckedChange={(e) => {
-                                setEnabledOptions((prev: any) => {
-                                    return produce(prev, (draft: any) => {
+                                setEnabledOptions(
+                                    produce(enabledOptions, (draft: any) => {
                                         if (!draft[i.name]) {
                                             draft[i.name] = {};
                                         }
-                                        draft[i.name]["all"] =
-                                            e.valueOf() as boolean;
-                                    });
-                                });
+                                        draft[i.name]["all"] = e;
+                                    }),
+                                );
                             }}
                         />
-                        <ProblemOptions
-                            problemGenerator={i}
-                            enabledOptions={enabledOptions[i.name] ?? {}}
-                            setEnabledOptions={(i) => {
-                                setEnabledOptions((prev: any) => {
-                                    return produce(prev, (draft: any) => {
-                                        draft[i.name] = i;
-                                    });
-                                });
-                            }}
-                        />
+                        <div className="pl-4">
+                            <ProblemOptions
+                                problemGenerator={i}
+                                enabledOptions={enabledOptions[i.name] ?? {}}
+                                setEnabledOptions={(j) => {
+                                    setEnabledOptions(
+                                        produce(
+                                            enabledOptions,
+                                            (draft: any) => {
+                                                draft[i.name] = j;
+                                            },
+                                        ),
+                                    );
+                                }}
+                            />
+                        </div>
                     </li>
                 );
             })}

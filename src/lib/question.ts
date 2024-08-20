@@ -8,7 +8,7 @@ export interface Problem {
 
 export interface ProblemGenerator {
     generate(enabledProblems: EnabledProblems): Problem;
-    options?: (string | ProblemGenerator)[];
+    options: (string | ProblemGenerator)[];
     name: string;
 }
 
@@ -23,7 +23,9 @@ export const TopLevelProblemGenerator: ProblemGenerator = {
     name: "Top Level",
 };
 
-export type EnabledProblems = any;
+export type EnabledProblems = {
+    [key: string]: boolean | EnabledProblems;
+};
 
 export function generateProblems(
     amount: number,
