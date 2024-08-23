@@ -1,20 +1,10 @@
 import nerdamer from "nerdamer-prime";
-import {
-    DefaultProblemGenerator,
-    EnabledProblems,
-    Problem,
-    ProblemCategory,
-    ProblemGenerator,
-} from "../question";
+import { DefaultProblemGenerator, Problem, ProblemCategory } from "../question";
 import {
     derivative,
-    integral,
-    pickRandom,
-    randomCoefficient,
     randomInt,
     randomNonZeroInt,
     randomPolynomial,
-    simplifyToTeX,
 } from "../utils";
 
 const EOTLProblem: DefaultProblemGenerator = {
