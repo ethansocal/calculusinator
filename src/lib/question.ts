@@ -1,37 +1,51 @@
 import { Derivative } from "./problems/derivative";
+import { EOTL } from "./problems/eotl";
 import { Integral } from "./problems/integral";
+import { pickRandom } from "./utils";
 
 export interface Problem {
     question: string;
     answer: string;
 }
 
+export interface DefaultProblemGenerator {
+    generate(): Problem;
+}
+
 export interface ProblemGenerator {
-    generate(enabledProblems: EnabledProblems): Problem;
-    options: (string | ProblemGenerator)[];
+    generate(): Problem;
     name: string;
 }
 
-const problems = [Derivative, Integral];
+export interface ProblemCategory {
+    name: string;
+    options: ProblemGenerator[];
+    defaultOptions: DefaultProblemGenerator[];
+}
 
-export const TopLevelProblemGenerator: ProblemGenerator = {
-    generate(enabledProblems: EnabledProblems): Problem {
-        const generator = problems[Math.floor(Math.random() * problems.length)];
-        return generator.generate(enabledProblems);
-    },
-    options: [Derivative, Integral],
-    name: "Top Level",
-};
+export const problemCategories: ProblemCategory[] = [
+    Derivative,
+    Integral,
+    EOTL,
+];
 
 export type EnabledProblems = {
-    [key: string]: boolean | EnabledProblems;
+    [key: string]: { [key2: string]: boolean } | undefined;
 };
 
 export function generateProblems(
     amount: number,
     enabledProblems: EnabledProblems,
 ): Problem[] {
-    return Array.from({ length: amount }, () =>
-        TopLevelProblemGenerator.generate(enabledProblems),
-    );
+    return Array.from({ length: amount }, () => {
+        const category = pickRandom(
+            problemCategories.filter(
+                (option) => enabledProblems[option.name]?.["all"] || true,
+            ),
+        );
+        return pickRandom([
+            ...category.options,
+            ...category.defaultOptions,
+        ]).generate();
+    });
 }

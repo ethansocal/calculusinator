@@ -10,7 +10,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { ProblemGenerator, TopLevelProblemGenerator } from "./lib/question";
+import { problemCategories } from "./lib/question";
 import { produce } from "immer";
 
 const MAX_QUESTIONS = 100;
@@ -19,93 +19,25 @@ function CheckboxLabel({
     checked,
     onCheckedChange,
     name,
+    enabled = true,
 }: {
     checked: boolean;
     onCheckedChange: (e: boolean) => void;
     name: string;
+    enabled?: boolean;
 }) {
     const id = useId();
 
     return (
-        <div className={"flex flex-row gap-1 items-center"}>
+        <div className={"flex flex-row gap-1 items-center mb-1"}>
             <Checkbox
                 id={id}
                 checked={checked}
                 onCheckedChange={(e) => onCheckedChange(e.valueOf() as boolean)}
+                disabled={!enabled}
             />
             <Label htmlFor={id}>{name}</Label>
         </div>
-    );
-}
-
-export function ProblemOptions({
-    problemGenerator,
-    enabledOptions,
-    setEnabledOptions,
-}: {
-    problemGenerator: ProblemGenerator;
-    enabledOptions: any;
-    setEnabledOptions: (options: any) => void;
-}) {
-    return (
-        <ul>
-            {problemGenerator.options?.map((i) => {
-                if (typeof i === "string") {
-                    return (
-                        <li key={i} className="mt-2">
-                            <CheckboxLabel
-                                name={i}
-                                checked={enabledOptions[i] ?? true}
-                                onCheckedChange={(e) => {
-                                    setEnabledOptions(
-                                        produce(
-                                            enabledOptions,
-                                            (draft: any) => {
-                                                draft[i] = e;
-                                            },
-                                        ),
-                                    );
-                                }}
-                            />
-                        </li>
-                    );
-                }
-                return (
-                    <li key={i.name} className="mt-4">
-                        <CheckboxLabel
-                            name={i.name}
-                            checked={enabledOptions[i.name]?.["all"] ?? true}
-                            onCheckedChange={(e) => {
-                                setEnabledOptions(
-                                    produce(enabledOptions, (draft: any) => {
-                                        if (!draft[i.name]) {
-                                            draft[i.name] = {};
-                                        }
-                                        draft[i.name]["all"] = e;
-                                    }),
-                                );
-                            }}
-                        />
-                        <div className="pl-4">
-                            <ProblemOptions
-                                problemGenerator={i}
-                                enabledOptions={enabledOptions[i.name] ?? {}}
-                                setEnabledOptions={(j) => {
-                                    setEnabledOptions(
-                                        produce(
-                                            enabledOptions,
-                                            (draft: any) => {
-                                                draft[i.name] = j;
-                                            },
-                                        ),
-                                    );
-                                }}
-                            />
-                        </div>
-                    </li>
-                );
-            })}
-        </ul>
     );
 }
 
@@ -164,11 +96,77 @@ export function Header({
                                 }}
                             />
                         </div>
-                        <ProblemOptions
-                            problemGenerator={TopLevelProblemGenerator}
-                            enabledOptions={enabledProblems}
-                            setEnabledOptions={setEnabledProblems}
-                        />
+                        <ul>
+                            {problemCategories.map((i) => (
+                                <li key={i.name}>
+                                    <CheckboxLabel
+                                        checked={
+                                            enabledProblems[i.name]?.["all"] ??
+                                            true
+                                        }
+                                        onCheckedChange={(e) => {
+                                            setEnabledProblems(
+                                                produce(
+                                                    enabledProblems,
+                                                    (draft: any) => {
+                                                        if (!draft[i.name]) {
+                                                            draft[i.name] = {};
+                                                        }
+                                                        draft[i.name]["all"] =
+                                                            e;
+                                                    },
+                                                ),
+                                            );
+                                        }}
+                                        name={i.name}
+                                    />
+                                    <ul className="ml-4">
+                                        {i.options.map((j) => (
+                                            <li key={j.name}>
+                                                <CheckboxLabel
+                                                    checked={
+                                                        enabledProblems[
+                                                            i.name
+                                                        ]?.[j.name] ?? true
+                                                    }
+                                                    onCheckedChange={(e) => {
+                                                        setEnabledProblems(
+                                                            produce(
+                                                                enabledProblems,
+                                                                (
+                                                                    draft: any,
+                                                                ) => {
+                                                                    if (
+                                                                        !draft[
+                                                                            i
+                                                                                .name
+                                                                        ]
+                                                                    ) {
+                                                                        draft[
+                                                                            i.name
+                                                                        ] = {};
+                                                                    }
+                                                                    draft[
+                                                                        i.name
+                                                                    ][j.name] =
+                                                                        e;
+                                                                },
+                                                            ),
+                                                        );
+                                                    }}
+                                                    name={j.name}
+                                                    enabled={
+                                                        enabledProblems[
+                                                            i.name
+                                                        ]?.["all"] ?? true
+                                                    }
+                                                />
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </li>
+                            ))}
+                        </ul>
                     </PopoverContent>
                 </Popover>
                 <div className={"flex flex-row gap-1 items-center"}>

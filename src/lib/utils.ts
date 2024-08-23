@@ -2,10 +2,14 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Expression } from "nerdamer-prime";
 import { nerdamer } from "@/lib/nerdamer";
-import { EnabledProblems, ProblemGenerator } from "./question";
+import { EnabledProblems, ProblemCategory, ProblemGenerator } from "./question";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
+}
+
+export function simplifyToTeX(input: string) {
+    return nerdamer(input).toTeX();
 }
 
 export class WeightedRandomizer<T> {
@@ -24,18 +28,14 @@ export class WeightedRandomizer<T> {
 }
 
 export function createOptionsTree(
-    options: (string | ProblemGenerator)[],
+    categories: ProblemCategory[],
 ): EnabledProblems {
     let result: EnabledProblems = {};
-    for (const i of options) {
-        if (typeof i === "string") {
-            result[i] = true;
-        } else {
-            result[i.name] = {
-                all: true,
-                ...createOptionsTree(i.options ?? []),
-            };
-        }
+    for (const i of categories) {
+        result[i.name] = {
+            all: true,
+            ...Object.fromEntries(i.options.map((j) => [j.name, true])),
+        };
     }
     return result;
 }

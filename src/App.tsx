@@ -1,6 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import "./globals.css";
-import { generateProblems, TopLevelProblemGenerator } from "@/lib/question";
+import {
+    EnabledProblems,
+    generateProblems,
+    Problem,
+    problemCategories,
+} from "@/lib/question";
 import { Header } from "@/Header";
 import MathRender from "./lib/MathRender";
 import { createOptionsTree } from "./lib/utils";
@@ -8,14 +13,23 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 
 function App() {
     const [numOfProblems, setNumOfProblems] = useState(10);
-    const [enabledProblems, setEnabledProblems] = useLocalStorage(
-        "enabledProblems",
-        createOptionsTree(TopLevelProblemGenerator.options),
+    const [enabledProblems, setEnabledProblems] = useState(
+        (JSON.parse(
+            localStorage.getItem("enabledProblems")!,
+        ) as EnabledProblems) || createOptionsTree(problemCategories),
     );
-    const [questions, setQuestions] = useState(
+    const [questions, setQuestions] = useState<Problem[]>(
         generateProblems(numOfProblems, enabledProblems),
     );
     const [showingAnswers, setShowingAnswers] = useState(false);
+
+    useEffect(() => {
+        localStorage.setItem(
+            "enabledProblems",
+            JSON.stringify(enabledProblems),
+        );
+        setQuestions(generateProblems(numOfProblems, enabledProblems));
+    }, [enabledProblems]);
 
     useEffect(() => {
         setQuestions((current) => {
@@ -32,6 +46,7 @@ function App() {
             return current;
         });
     }, [numOfProblems]);
+
     return (
         <>
             <Header
