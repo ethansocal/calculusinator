@@ -44,6 +44,10 @@ export function randomInt(a: number, b: number) {
     return a + Math.floor(Math.random() * (b - a));
 }
 
+export function randomNonZeroInt(a: number, b: number): number {
+    return randomInt(a, b) || randomNonZeroInt(a, b);
+}
+
 export function simplifyAndExpand(input: Expression): Expression {
     // @ts-ignore
     return nerdamer.expand(nerdamer.simplify(nerdamer(input)));

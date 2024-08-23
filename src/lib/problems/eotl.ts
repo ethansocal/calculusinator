@@ -12,6 +12,7 @@ import {
     pickRandom,
     randomCoefficient,
     randomInt,
+    randomNonZeroInt,
     randomPolynomial,
     simplifyToTeX,
 } from "../utils";
@@ -19,10 +20,18 @@ import {
 const EOTLProblem: DefaultProblemGenerator = {
     generate(): Problem {
         const problem = randomPolynomial();
-        const x = randomInt(-5, 10);
+        let x = randomInt(-5, 10);
+        let m;
+        try {
+            m = derivative(problem).sub("x", x.toString());
+        } catch {
+            x = randomNonZeroInt(-5, 10);
+            m = derivative(problem).sub("x", x.toString());
+        }
+
         return {
             question: `Find the equation of the tangent line to the curve $y = ${nerdamer(problem).toTeX()}$ at $x = ${x}$`,
-            answer: `$y - ${nerdamer(problem).sub("x", x.toString())} = ${derivative(problem).sub("x", x.toString())}(x - ${x})$`,
+            answer: `$y - ${nerdamer(problem).sub("x", x.toString()).toTeX()} = ${m.toTeX()}(x - ${x})$`,
         };
     },
 };

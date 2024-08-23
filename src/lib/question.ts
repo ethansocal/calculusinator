@@ -40,7 +40,7 @@ export function generateProblems(
     return Array.from({ length: amount }, () => {
         const category = pickRandom(
             problemCategories.filter(
-                (option) => enabledProblems[option.name]?.["all"] || true,
+                (option) => enabledProblems[option.name]?.["all"] ?? true,
             ),
         );
         return pickRandom([
