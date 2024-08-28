@@ -1,10 +1,15 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Expression } from "nerdamer";
+import { Expression } from "nerdamer-prime";
 import { nerdamer } from "@/lib/nerdamer";
+import { EnabledProblems, ProblemCategory, ProblemGenerator } from "./question";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
+}
+
+export function simplifyToTeX(input: string) {
+    return nerdamer(input).toTeX();
 }
 
 export class WeightedRandomizer<T> {
@@ -22,8 +27,25 @@ export class WeightedRandomizer<T> {
     }
 }
 
+export function createOptionsTree(
+    categories: ProblemCategory[],
+): EnabledProblems {
+    let result: EnabledProblems = {};
+    for (const i of categories) {
+        result[i.name] = {
+            all: true,
+            ...Object.fromEntries(i.options.map((j) => [j.name, true])),
+        };
+    }
+    return result;
+}
+
 export function randomInt(a: number, b: number) {
     return a + Math.floor(Math.random() * (b - a));
+}
+
+export function randomNonZeroInt(a: number, b: number): number {
+    return randomInt(a, b) || randomNonZeroInt(a, b);
 }
 
 export function simplifyAndExpand(input: Expression): Expression {

@@ -1,39 +1,66 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import "./globals.css";
-import { Answer, generateQuestions, Question } from "@/lib/question";
-import { ThemeProvider } from "@/components/theme-provider";
+import {
+    EnabledProblems,
+    generateProblems,
+    Problem,
+    problemCategories,
+} from "@/lib/question";
 import { Header } from "@/Header";
+import MathRender from "./lib/MathRender";
+import { createOptionsTree } from "./lib/utils";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 function App() {
-    const [numOfQuestions, setNumOfQuestions] = useState(10);
-    const [questions, setQuestions] = useState(
-        generateQuestions(numOfQuestions),
+    const [numOfProblems, setNumOfProblems] = useState(10);
+    const [enabledProblems, setEnabledProblems] = useState(
+        (JSON.parse(
+            localStorage.getItem("enabledProblems")!,
+        ) as EnabledProblems) || createOptionsTree(problemCategories),
+    );
+    const [questions, setQuestions] = useState<Problem[]>(
+        generateProblems(numOfProblems, enabledProblems),
     );
     const [showingAnswers, setShowingAnswers] = useState(false);
 
     useEffect(() => {
+        localStorage.setItem(
+            "enabledProblems",
+            JSON.stringify(enabledProblems),
+        );
+        setQuestions(generateProblems(numOfProblems, enabledProblems));
+    }, [enabledProblems]);
+
+    useEffect(() => {
         setQuestions((current) => {
-            if (current.length < numOfQuestions) {
+            if (current.length < numOfProblems) {
                 return current.concat(
-                    generateQuestions(numOfQuestions - current.length),
+                    generateProblems(
+                        numOfProblems - current.length,
+                        enabledProblems,
+                    ),
                 );
-            } else if (current.length > numOfQuestions) {
-                console.log(`slicing ${current.length - numOfQuestions}`);
-                return current.slice(0, numOfQuestions);
+            } else if (current.length > numOfProblems) {
+                return current.slice(0, numOfProblems);
             }
             return current;
         });
-    }, [numOfQuestions]);
+    }, [numOfProblems]);
+
     return (
         <>
             <Header
                 newQuestions={() =>
-                    setQuestions(generateQuestions(numOfQuestions))
+                    setQuestions(
+                        generateProblems(numOfProblems, enabledProblems),
+                    )
                 }
                 showingAnswers={showingAnswers}
                 setShowingAnswers={setShowingAnswers}
-                setNumOfQuestions={setNumOfQuestions}
-                numOfQuestions={numOfQuestions}
+                setNumOfQuestions={setNumOfProblems}
+                numOfQuestions={numOfProblems}
+                enabledProblems={enabledProblems}
+                setEnabledProblems={setEnabledProblems}
             />
             <div
                 className={"grid p-6 font-XITS gap-y-4 overflow-clip gap-x-4"}
@@ -41,27 +68,19 @@ function App() {
                     gridTemplateColumns: `min-content ${showingAnswers ? "max-content" : "1fr"} ${showingAnswers ? "1fr" : 0}`,
                 }}
             >
-                {questions.map((question, index) => (
+                {questions.map((problem, index) => (
                     <Fragment
                         key={
-                            question.type +
-                            JSON.stringify(question.data) +
-                            index
+                            problem.question + problem.answer + index.toString()
                         }
                     >
                         <p className={"justify-self-end"}>{index + 1}.</p>
                         <div>
-                            <Question
-                                type={question.type}
-                                data={question.data}
-                            />
+                            <MathRender math={problem.question} />
                         </div>
                         <div className={"self-end text-primary"}>
                             <div className={showingAnswers ? "" : "hidden"}>
-                                <Answer
-                                    type={question.type}
-                                    data={question.data}
-                                />
+                                <MathRender math={problem.answer} />
                             </div>
                         </div>
                     </Fragment>

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ModeToggle } from "@/components/mode-toggle";
-import React from "react";
+import React, { useEffect, useId } from "react";
 import { Settings } from "lucide-react";
 import {
     Popover,
@@ -10,8 +10,36 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { problemCategories } from "./lib/question";
+import { produce } from "immer";
 
 const MAX_QUESTIONS = 100;
+
+function CheckboxLabel({
+    checked,
+    onCheckedChange,
+    name,
+    enabled = true,
+}: {
+    checked: boolean;
+    onCheckedChange: (e: boolean) => void;
+    name: string;
+    enabled?: boolean;
+}) {
+    const id = useId();
+
+    return (
+        <div className={"flex flex-row gap-1 items-center mb-1"}>
+            <Checkbox
+                id={id}
+                checked={checked}
+                onCheckedChange={(e) => onCheckedChange(e.valueOf() as boolean)}
+                disabled={!enabled}
+            />
+            <Label htmlFor={id}>{name}</Label>
+        </div>
+    );
+}
 
 export function Header({
     newQuestions,
@@ -19,12 +47,16 @@ export function Header({
     setShowingAnswers,
     setNumOfQuestions,
     numOfQuestions,
+    enabledProblems,
+    setEnabledProblems,
 }: {
     newQuestions: () => void;
     showingAnswers: boolean;
     setShowingAnswers: (showingAnswers: boolean) => void;
     setNumOfQuestions: (amount: number) => void;
     numOfQuestions: number;
+    enabledProblems: any;
+    setEnabledProblems: (enabledProblems: any) => void;
 }) {
     return (
         <header
@@ -64,6 +96,77 @@ export function Header({
                                 }}
                             />
                         </div>
+                        <ul>
+                            {problemCategories.map((i) => (
+                                <li key={i.name}>
+                                    <CheckboxLabel
+                                        checked={
+                                            enabledProblems[i.name]?.["all"] ??
+                                            true
+                                        }
+                                        onCheckedChange={(e) => {
+                                            setEnabledProblems(
+                                                produce(
+                                                    enabledProblems,
+                                                    (draft: any) => {
+                                                        if (!draft[i.name]) {
+                                                            draft[i.name] = {};
+                                                        }
+                                                        draft[i.name]["all"] =
+                                                            e;
+                                                    },
+                                                ),
+                                            );
+                                        }}
+                                        name={i.name}
+                                    />
+                                    <ul className="ml-4">
+                                        {i.options.map((j) => (
+                                            <li key={j.name}>
+                                                <CheckboxLabel
+                                                    checked={
+                                                        enabledProblems[
+                                                            i.name
+                                                        ]?.[j.name] ?? true
+                                                    }
+                                                    onCheckedChange={(e) => {
+                                                        setEnabledProblems(
+                                                            produce(
+                                                                enabledProblems,
+                                                                (
+                                                                    draft: any,
+                                                                ) => {
+                                                                    if (
+                                                                        !draft[
+                                                                            i
+                                                                                .name
+                                                                        ]
+                                                                    ) {
+                                                                        draft[
+                                                                            i.name
+                                                                        ] = {};
+                                                                    }
+                                                                    draft[
+                                                                        i.name
+                                                                    ][j.name] =
+                                                                        e;
+                                                                },
+                                                            ),
+                                                        );
+                                                    }}
+                                                    name={j.name}
+                                                    enabled={
+                                                        enabledProblems[
+                                                            i.name
+                                                        ]?.["all"] ?? true
+                                                    }
+                                                />
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </li>
+                            ))}
+                        </ul>
                     </PopoverContent>
                 </Popover>
                 <div className={"flex flex-row gap-1 items-center"}>

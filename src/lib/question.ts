@@ -1,53 +1,51 @@
-import { ReactElement } from "react";
+import { Derivative } from "./problems/derivative";
+import { EOTL } from "./problems/eotl";
+import { Integral } from "./problems/integral";
+import { pickRandom } from "./utils";
 
-const questions: Record<string, QuestionFile<unknown>> = import.meta.glob(
-    "./questions/**/*.tsx",
-    {
-        eager: true,
-    },
-);
-
-export function Question({ type, data }: { type: string; data: any }) {
-    return questions[type]!.question(data);
+export interface Problem {
+    question: string;
+    answer: string;
 }
 
-export function Answer({ type, data }: { type: string; data: any }) {
-    return questions[type]!.answer(data);
-}
-export interface QuestionFile<T> {
-    createData: () => T;
-    question: (data: T) => ReactElement;
-    answer: (data: T) => ReactElement;
+export interface DefaultProblemGenerator {
+    generate(): Problem;
 }
 
-function randomQuestion() {
-    let keys = Object.keys(questions).filter((key) =>
-        /\.\/questions\/[^_]+.tsx/.test(key),
-    );
-    return keys[(keys.length * Math.random()) << 0];
+export interface ProblemGenerator {
+    generate(): Problem;
+    name: string;
 }
 
-export function generateQuestions(num: number) {
-    return Array(num)
-        .fill(0)
-        .map((_) => {
-            let attempts = 0;
-            while (attempts < 10) {
-                try {
-                    const question = randomQuestion();
-                    return {
-                        type: question,
-                        data: questions[question]!.createData(),
-                    };
-                } catch (e) {
-                    console.error(e);
-                    attempts += 1;
-                }
-            }
-            console.error("Error generating question");
-            return {
-                type: "./questions/_error.tsx",
-                data: {},
-            };
-        });
+export interface ProblemCategory {
+    name: string;
+    options: ProblemGenerator[];
+    defaultOptions: DefaultProblemGenerator[];
+}
+
+export const problemCategories: ProblemCategory[] = [
+    Derivative,
+    Integral,
+    EOTL,
+];
+
+export type EnabledProblems = {
+    [key: string]: { [key2: string]: boolean } | undefined;
+};
+
+export function generateProblems(
+    amount: number,
+    enabledProblems: EnabledProblems,
+): Problem[] {
+    return Array.from({ length: amount }, () => {
+        const category = pickRandom(
+            problemCategories.filter(
+                (option) => enabledProblems[option.name]?.["all"] ?? true,
+            ),
+        );
+        return pickRandom([
+            ...category.options,
+            ...category.defaultOptions,
+        ]).generate();
+    });
 }
